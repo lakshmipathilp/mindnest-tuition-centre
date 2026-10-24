@@ -1,1 +1,0 @@
-import{_ as e,g as t,n,v as r}from"./index-NSg9daBQ.js";var i=r();function a(){return e(`Sunday Activity Day`,`Sunday Activity Day at MindNest: art, puzzles, storytelling, public speaking and team challenges. Schedule to be confirmed by the centre.`),(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(t,{h1:!0}),(0,i.jsx)(n,{})]})}export{a as default};
