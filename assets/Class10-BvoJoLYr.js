@@ -1,1 +1,0 @@
-import{_ as e,n as t,p as n,u as r,v as i}from"./index-B7nD0IqT.js";var a=i();function o(){return e(`Class 10 preparation`,`Planned Class 10 preparation at MindNest: chapter-wise teaching, regular practice, assessments, mistake analysis and revision.`),(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(r,{h1:!0}),(0,a.jsx)(n,{}),(0,a.jsx)(t,{})]})}export{o as default};
