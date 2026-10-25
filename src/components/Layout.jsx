@@ -4,154 +4,190 @@ import { Menu, X, Phone, Mail, AtSign, Gift } from 'lucide-react'
 import { navLinks } from '../data/content'
 import { site } from '../data/site'
 
-function ScrollManager() {
-  const { pathname, hash } = useLocation()
-  useEffect(() => {
-    if (hash) {
-      const el = document.getElementById(hash.slice(1))
-      if (el) {
-        el.scrollIntoView()
-        return
-      }
-    }
-    window.scrollTo(0, 0)
-  }, [pathname, hash])
-  return null
+function getAssetPath(path) {
+  const base = import.meta.env.BASE_URL || '/'
+  return `${base}${path.replace(/^\/+/, '')}`
+}
+
+function Brand({ footer = false }) {
+  return (
+    <Link
+      to="/"
+      className={`brand${footer ? ' footer-brand-link' : ''}`}
+      aria-label="MindNest Tuition Centre home"
+    >
+      <img
+        className={`brand-wordmark${footer ? ' footer-logo' : ''}`}
+        src={getAssetPath('images/mindnest-wordmark.png')}
+        alt="MindNest Tuition Centre"
+        onError={(event) => {
+          console.error(
+            'MindNest logo could not load:',
+            event.currentTarget.src
+          )
+        }}
+      />
+    </Link>
+  )
 }
 
 function Header() {
-  const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { pathname } = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
 
-  useEffect(() => setOpen(false), [pathname])
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    setMenuOpen(false)
+  }, [location.pathname])
+
   useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+    document.body.classList.toggle('menu-open', menuOpen)
+
+    return () => {
+      document.body.classList.remove('menu-open')
+    }
+  }, [menuOpen])
 
   return (
-    <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
+    <header className="site-header">
       <div className="container header-inner">
-        <Link to="/" className="brand" aria-label="MindNest — home">
-          <img className="brand-wordmark" src="/images/mindnest-wordmark.png" alt="MindNest Tuition Centre" />
-        </Link>
+        <Brand />
 
-        <nav id="main-nav" className={`nav ${open ? 'open' : ''}`} aria-label="Main">
-          {navLinks.map((l) => (
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        <nav
+          className={`main-nav${menuOpen ? ' is-open' : ''}`}
+          aria-label="Main navigation"
+        >
+          {navLinks.map((item) => (
             <NavLink
-              key={l.to}
-              to={l.to}
-              end={l.to === '/'}
-              className={({ isActive }) => `${isActive ? 'active' : ''} ${l.to === '/sunday' ? 'nav-sunday' : ''}`.trim()}
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              className={({ isActive }) =>
+                `nav-link${isActive ? ' active' : ''}`
+              }
+              onClick={() => setMenuOpen(false)}
             >
-              {l.label}
+              {item.label}
             </NavLink>
           ))}
-          <Link to="/contact?type=One-week+free+trial#enquiry" className="btn btn-primary nav-trial">
-            <Gift size={18} aria-hidden="true" /> Free Trial
+
+          <Link
+            to="/contact"
+            className="btn btn-primary btn-sm header-cta"
+            onClick={() => setMenuOpen(false)}
+          >
+            Enquire Now
           </Link>
         </nav>
-
-        <div className="header-cta">
-          <Link to="/contact?type=One-week+free+trial#enquiry" className="btn btn-primary btn-sm">
-            <Gift size={16} aria-hidden="true" /> Free Trial
-          </Link>
-          <button
-            className="menu-btn"
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-            aria-controls="main-nav"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-          >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
       </div>
     </header>
   )
 }
 
 function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer className="site-footer">
-      <div className="container">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <Link to="/" className="brand">
-              <img className="brand-wordmark" src="/images/mindnest-wordmark.png" alt="MindNest Tuition Centre" />
+      <div className="container footer-grid">
+        <div className="footer-brand">
+          <Brand footer />
+
+          <p>{site.supportingMessage}</p>
+
+          <p className="footer-motto">{site.tagline}</p>
+        </div>
+
+        <div className="footer-column">
+          <h3>Quick Links</h3>
+
+          {navLinks.map((item) => (
+            <Link key={item.to} to={item.to}>
+              {item.label}
             </Link>
-            <p>{site.supportingMessage}</p>
-            <p className="footer-motto">{site.tagline}</p>
-          </div>
-          <div>
-            <h4>Explore</h4>
-            <ul>
-              {navLinks.slice(0, 5).map((l) => (
-                <li key={l.to}><Link to={l.to}>{l.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>More</h4>
-            <ul>
-              {navLinks.slice(5).map((l) => (
-                <li key={l.to}><Link to={l.to}>{l.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Get in touch</h4>
-            <ul>
-              <li style={{ display: 'flex', gap: 10 }}>
-                <Phone size={16} style={{ marginTop: 5, flex: 'none' }} aria-hidden="true" />
-                {site.phone ? <a href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a> : <span>Phone — to be added</span>}
-              </li>
-              <li style={{ display: 'flex', gap: 10 }}>
-                <Mail size={16} style={{ marginTop: 5, flex: 'none' }} aria-hidden="true" />
-                {site.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : <span>Email — to be added</span>}
-              </li>
-              <li style={{ display: 'flex', gap: 10 }}>
-                <AtSign size={16} style={{ marginTop: 5, flex: 'none' }} aria-hidden="true" />
-                {site.instagram ? (
-                  <a href={`https://instagram.com/${site.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">@{site.instagram.replace('@', '')}</a>
-                ) : (
-                  <span>Instagram — to be added</span>
-                )}
-              </li>
-            </ul>
-          </div>
+          ))}
         </div>
-        <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} MindNest. All rights reserved.</span>
-          <span>We don’t just want to teach students differently. We want to help students learn differently.</span>
+
+        <div className="footer-column">
+          <h3>Contact Us</h3>
+
+          {site.phone && (
+            <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}>
+              <Phone size={16} aria-hidden="true" />
+              <span>{site.phone}</span>
+            </a>
+          )}
+
+          {site.email && (
+            <a href={`mailto:${site.email}`}>
+              <Mail size={16} aria-hidden="true" />
+              <span>{site.email}</span>
+            </a>
+          )}
+
+          {site.instagram && (
+            <a
+              href={site.instagram}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <AtSign size={16} aria-hidden="true" />
+              <span>Instagram</span>
+            </a>
+          )}
         </div>
+
+        <div className="footer-column footer-highlight">
+          <Gift size={25} aria-hidden="true" />
+
+          <h3>Ready to Get Started?</h3>
+
+          <p>
+            Contact us to learn more about our classes and study programmes.
+          </p>
+
+          <Link to="/contact" className="button button-primary">
+            Contact Us
+          </Link>
+        </div>
+      </div>
+
+      <div className="container footer-bottom">
+        <p>
+          © {currentYear} MindNest Tuition Centre. All rights reserved.
+        </p>
+
+        <Link to="/privacy">Privacy</Link>
       </div>
     </footer>
   )
 }
 
 export default function Layout() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [location.pathname])
+
   return (
     <>
-      <a href="#main" className="skip-link">Skip to content</a>
-      <ScrollManager />
       <Header />
-      <main id="main" tabIndex={-1}>
+
+      <main>
         <Outlet />
       </main>
+
       <Footer />
-      <Link to="/contact?type=One-week+free+trial#enquiry" className="mobile-trial" aria-label="Reserve your one week free trial">
-        <span>One week free trial</span>
-        <span className="btn btn-yellow">Reserve</span>
-      </Link>
     </>
   )
 }

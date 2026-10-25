@@ -36,6 +36,6 @@ export const gallery = [
   { id: 12, category: 'events', src: '', alt: '', caption: 'Celebration day', size: 'wide' },
 ]
 
-export const GALLERY_PATH = '/images/gallery/'
+export const GALLERY_PATH = `${import.meta.env.BASE_URL}images/gallery/`
 
 // Add image filenames to the gallery entries above one at a time.

@@ -63,19 +63,29 @@ export function Hero() {
   return (
     <section className="hero banner-hero" aria-labelledby="hero-title">
       <div className="container banner-shell">
+
+        {/* MindNest logo */}
         <Reveal className="brand-block" delay={0.05}>
-          <img className="hero-brand-logo" src="/images/mindnest-logo.png" alt="MindNest Tuition Centre — Learn, Grow, Achieve Together" />
+          <img
+            className="hero-brand-logo"
+            src={`${import.meta.env.BASE_URL}images/mindnest-logo.png`}
+            alt="MindNest Tuition Centre — Learn, Grow, Achieve Together"
+          />
         </Reveal>
 
+        {/* Learning feature cards */}
         <Reveal className="feature-strip" delay={0.12}>
           {heroCards.map(({ label, icon: Icon, cls }) => (
             <span key={label} className={`float-card ${cls}`}>
-              <span className="ic"><Icon size={18} aria-hidden="true" /></span>
+              <span className="ic">
+                <Icon size={18} aria-hidden="true" />
+              </span>
               {label}
             </span>
           ))}
         </Reveal>
 
+        {/* Main heading */}
         <Reveal className="banner-callout" delay={0.1}>
           <h1 id="hero-title">
             A Brighter <span>Tomorrow</span>
@@ -83,16 +93,23 @@ export function Hero() {
           </h1>
         </Reveal>
 
+        {/* Classroom illustration */}
         <Reveal className="hero-scene" dir="right" delay={0.18}>
           <div className="scene-deco scene-left" aria-hidden="true" />
           <div className="scene-deco scene-right" aria-hidden="true" />
+
           <div className="mini-sign" aria-label="Learn explore grow">
             <span>LEARN</span>
             <span>EXPLORE</span>
             <span>GROW</span>
           </div>
+
           <ClassroomIllustration />
-          <div className="chalkboard" aria-label="Ask questions, explore, think grow">
+
+          <div
+            className="chalkboard"
+            aria-label="Ask questions, explore, think grow"
+          >
             <span>Ask</span>
             <span>Questions</span>
             <span>Explore</span>
@@ -101,14 +118,26 @@ export function Hero() {
           </div>
         </Reveal>
 
+        {/* Action buttons */}
         <div className="hero-actions">
-          <Link to="/contact?type=One-week+free+trial#enquiry" className="btn btn-primary">
-            <Gift size={18} aria-hidden="true" /> Reserve a Free Trial
+          <Link
+            to="/contact?type=One-week+free+trial#enquiry"
+            className="btn btn-primary"
+          >
+            <Gift size={18} aria-hidden="true" />
+            Reserve a Free Trial
           </Link>
+
           <Link to="/about" className="btn btn-ghost">
-            Discover MindNest <ArrowRight size={18} className="arrow" aria-hidden="true" />
+            Discover MindNest
+            <ArrowRight
+              size={18}
+              className="arrow"
+              aria-hidden="true"
+            />
           </Link>
         </div>
+
       </div>
     </section>
   )
